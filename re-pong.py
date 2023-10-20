@@ -131,6 +131,7 @@ class ball_class:
 
     def move_self(self):
         global score
+
         xvel, yvel = calculate_velocities(self.angle, ball_speed)
         new_x, new_y = self.x + xvel, self.y + yvel
 
@@ -175,7 +176,7 @@ def predict_direction(show_path):
     xvel,yvel = calculate_velocities(ball.angle,ball_speed*predictor_accelleration)
     while True:
         new_x, new_y = x + xvel, y + yvel
-
+        path.append([x,y])
 
 
         if new_y - ball.radius < 0 or new_y + ball.radius > displaysize[1]:
@@ -289,6 +290,7 @@ def menu():
 
 def main(botl,botr):
     global ball, paddleL, paddleR, clock, score,clockspeed,enable_predictor,font
+    defbotstate = tuple((botl,botr))
     score = [0,0]
     clock = pg.time.Clock()
     paddleL = paddle_class(20)
@@ -302,14 +304,21 @@ def main(botl,botr):
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     dead = 1
-                elif event.key == pg.K_KP_PLUS:
+                elif event.key in (pg.K_KP_PLUS,pg.K_o):
                     clockspeed*=2
 
-                elif event.key == pg.K_KP_MINUS:
+                elif event.key in (pg.K_KP_MINUS,pg.K_p):
                     clockspeed/=2
 
                 elif event.key == pg.K_g:
                     enable_predictor = not enable_predictor
+
+                elif event.key == pg.K_l:
+                    if (botl,botr) != defbotstate:
+                        botl,botr = defbotstate
+                    else:
+                        botl = True
+                        botr = True
 
         logic_calls(botl,botr)
         graphic_calls()
